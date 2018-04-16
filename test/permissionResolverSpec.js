@@ -1,4 +1,4 @@
-var expect = require('expect')
+var expect = require('expect.js')
 var PermissionDependencyResolver = require('../lib/permissionDependencyResolver')
 
 describe('PermissionDependencyResolver', function() {
@@ -18,16 +18,16 @@ describe('PermissionDependencyResolver', function() {
 
   it('validates whether permissions can be granted given simple dependencies', function(){
     pdr = new PermissionDependencyResolver(simplePermissionDependencies)
-    expect(pdr.canGrant(['view'], 'edit')).toBeTruthy()
-    expect(pdr.canGrant(['view'], 'delete')).toBeFalsy()
-    expect(pdr.canGrant(['view', 'edit'], 'alter_tags')).toBeTruthy()
-    expect(pdr.canGrant(['view'], 'create')).toBeTruthy()
+    expect(pdr.canGrant(['view'], 'edit')).to.be.ok()
+    expect(pdr.canGrant(['view'], 'delete')).to.not.be.ok()
+    expect(pdr.canGrant(['view', 'edit'], 'alter_tags')).to.be.ok()
+    expect(pdr.canGrant(['view'], 'create')).to.be.ok()
   })
 
   it('can sort permissions in dependency order given simple dependencies', function(){
     pdr = new PermissionDependencyResolver(simplePermissionDependencies)
 
-    expect(pdr.sort(['edit', 'delete', 'view'])).toEqual(['view', 'edit', 'delete'])
+    expect(pdr.sort(['edit', 'delete', 'view'])).to.be(['view', 'edit', 'delete'])
 
     possible_orderings = [
       ['view', 'edit', 'create', 'alter_tags'],
@@ -40,27 +40,27 @@ describe('PermissionDependencyResolver', function() {
   it('validates whether permissions can be denied given simple dependencies', function(){
     pdr = new PermissionDependencyResolver(simplePermissionDependencies)
 
-    expect(pdr.canDeny(['view', 'edit'], 'view')).toBeFalsy()
-    expect(pdr.canDeny(['view', 'edit'], 'edit')).toBeTruthy()
-    expect(pdr.canDeny(['view', 'edit', 'create'], 'edit')).toBeTruthy()
-    expect(pdr.canDeny(['view', 'edit', 'delete'], 'edit')).toBeFalsy()
+    expect(pdr.canDeny(['view', 'edit'], 'view')).to.not.be.ok()
+    expect(pdr.canDeny(['view', 'edit'], 'edit')).to.be.ok()
+    expect(pdr.canDeny(['view', 'edit', 'create'], 'edit')).to.be.ok()
+    expect(pdr.canDeny(['view', 'edit', 'delete'], 'edit')).to.not.be.ok()
   })
 
   it('validates whether permissions can be granted given complex dependencies', function(){
     pdr = new PermissionDependencyResolver(complexPermissionDependencies)
 
-    expect(pdr.canGrant(['view', 'edit', 'delete'], 'batch_update')).toBeFalsy()
-    expect(pdr.canGrant(['view', 'edit', 'create'], 'batch_update')).toBeTruthy()
-    expect(pdr.canGrant(['view', 'edit', 'delete'], 'audit')).toBeFalsy()
-    expect(pdr.canGrant(['view', 'edit', 'delete', 'create'], 'audit')).toBeTruthy()
+    expect(pdr.canGrant(['view', 'edit', 'delete'], 'batch_update')).to.not.be.ok()
+    expect(pdr.canGrant(['view', 'edit', 'create'], 'batch_update')).to.be.ok()
+    expect(pdr.canGrant(['view', 'edit', 'delete'], 'audit')).to.not.be.ok()
+    expect(pdr.canGrant(['view', 'edit', 'delete', 'create'], 'audit')).to.be.ok()
   })
 
   it('throws an exception when validating permissions if existing permissions are invalid', function(){
     pdr = new PermissionDependencyResolver(complexPermissionDependencies)
 
-    expect(function () { pdr.canGrant(['edit', 'create'], 'alter_tags') }).toThrowError("Invalid Base Permissions")
-    expect(function () { pdr.canGrant(['view', 'delete'], 'alter_tags') }).toThrowError("Invalid Base Permissions")
-    expect(function () { pdr.canDeny(['create', 'delete'], 'audit') }).toThrowError("Invalid Base Permissions")
+    expect(function () { pdr.canGrant(['edit', 'create'], 'alter_tags') }).to.throwError("Invalid Base Permissions")
+    expect(function () { pdr.canGrant(['view', 'delete'], 'alter_tags') }).to.throwError("Invalid Base Permissions")
+    expect(function () { pdr.canDeny(['create', 'delete'], 'audit') }).to.throwError("Invalid Base Permissions")
   })
 
   it('can sort permissions in dependency order given complex dependencies', function(){
@@ -71,7 +71,7 @@ describe('PermissionDependencyResolver', function() {
       ['view', 'edit', 'delete', 'create', 'audit']
     ]
 
-    expect(possible_orderings).toContainEqual(pdr.sort(['audit', 'create', 'delete', 'view', 'edit']))
+    expect(possible_orderings).to.be(pdr.sort(['audit', 'create', 'delete', 'view', 'edit']))
   })
 
 })
