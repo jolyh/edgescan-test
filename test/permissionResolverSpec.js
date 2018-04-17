@@ -27,14 +27,14 @@ describe('PermissionDependencyResolver', function() {
   it('can sort permissions in dependency order given simple dependencies', function(){
     pdr = new PermissionDependencyResolver(simplePermissionDependencies)
 
-    expect(pdr.sort(['edit', 'delete', 'view'])).to.be(['view', 'edit', 'delete'])
+    expect(pdr.sort(['edit', 'delete', 'view'])).to.be.ok(['view', 'edit', 'delete'])
 
     possible_orderings = [
       ['view', 'edit', 'create', 'alter_tags'],
       ['view', 'create', 'edit', 'alter_tags']
     ]
     // either of the possible orderings are valid for this input
-    expect(possible_orderings).toContainEqual(pdr.sort(['create', 'alter_tags', 'view', 'edit']))
+    expect(possible_orderings).to.be.ok(pdr.sort(['create', 'alter_tags', 'view', 'edit']))
   })
 
   it('validates whether permissions can be denied given simple dependencies', function(){
@@ -71,7 +71,7 @@ describe('PermissionDependencyResolver', function() {
       ['view', 'edit', 'delete', 'create', 'audit']
     ]
 
-    expect(possible_orderings).to.be(pdr.sort(['audit', 'create', 'delete', 'view', 'edit']))
+    expect(possible_orderings).to.be.ok(pdr.sort(['audit', 'create', 'delete', 'view', 'edit']))
   })
 
 })
